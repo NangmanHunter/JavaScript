@@ -1,0 +1,6 @@
+WeakMap
+ㄴWeakMap()
+ㄴweakMap.delete()
+ㄴweakMap.get()
+ㄴweakMap.has()
+ㄴweakMap.set()

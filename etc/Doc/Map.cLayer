@@ -1,0 +1,15 @@
+Map
+ㄴMap()
+ㄴMap[Symbol.species]
+ㄴMap.groupBy()
+ㄴmap.size
+ㄴmap.clear()
+ㄴmap.delete()
+ㄴmap.entries()
+ㄴmap.forEach()
+ㄴmap.get()
+ㄴmap.has()
+ㄴmap.keys()
+ㄴmap.set()
+ㄴmap.values()
+ㄴmap[Symbol.iterator]()

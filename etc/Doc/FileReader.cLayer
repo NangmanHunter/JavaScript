@@ -1,0 +1,10 @@
+FileReader
+ㄴFileReader()
+ㄴfileReader.error
+ㄴfileReader.readyState
+ㄴfileReader.result
+ㄴfileReader.abort()
+ㄴfileReader.readAsArrayBuffer()
+ㄴfileReader.readAsBinaryString()
+ㄴfileReader.readAsDataURL()
+ㄴfileReader.readAsText()

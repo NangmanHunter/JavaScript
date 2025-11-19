@@ -1,0 +1,6 @@
+JSON
+ㄴJSON[Symbol.toStringTag]
+ㄴJSON.isRawJSON()
+ㄴJSON.parse()
+ㄴJSON.rawJSON()
+ㄴJSON.stringify()

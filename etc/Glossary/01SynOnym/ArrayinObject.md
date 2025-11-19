@@ -1,0 +1,33 @@
+﻿- 객체 내에서 배열을 값으로 사용
+- 객체 안에 배열을 넣는다
+- 객체Value안에배열
+- 객체value안에배열
+- 객체값안에배열
+- 객체안에배열
+- 객체안에배열value
+- 객체안에배열Value
+- 객체
+- 객체배열
+- 객체-배열
+- 객체(배열)
+- 배열객체
+- object-value-array
+- {}
+- {[]}
+- {:[]}
+- { :[]}
+- {key:[]}
+- {key : []}
+- { key : [] }
+- array as a value in an object
+- array within an object
+- array in object
+- Array in Object
+- ArrayinObject
+- Array In Object
+- Array-In_Object
+- Array-in-Object
+- Array_in_Object
+- Array_In_Object
+- AIO
+- AiO

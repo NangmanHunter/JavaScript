@@ -1,0 +1,14 @@
+Promise
+ㄴPromise()
+ㄴPromise[Symbol.species]
+ㄴPromise.all()
+ㄴPromise.allSettled()
+ㄴPromise.any()
+ㄴPromise.race()
+ㄴPromise.reject()
+ㄴPromise.resolve()
+ㄴPromise.try()
+ㄴPromise.withResolvers()
+ㄴpromise.catch()
+ㄴpromise.finally()
+ㄴpromise.then()

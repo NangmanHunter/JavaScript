@@ -1,0 +1,5 @@
+WeakSet
+ㄴWeakSet()
+ㄴweakSet.add()
+ㄴweakSet.delete()
+ㄴweakSet.has()

@@ -1,0 +1,13 @@
+Error
+ㄴError()
+ㄴError.stackTraceLimit
+ㄴError.captureStackTrace()
+ㄴError.isError()
+ㄴerror.cause
+ㄴerror.columnNumber
+ㄴerror.fileName
+ㄴerror.lineNumber
+ㄴerror.message
+ㄴerror.name
+ㄴerror.stack
+ㄴerror.toString()

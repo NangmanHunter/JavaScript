@@ -1,0 +1,14 @@
+Intl
+ㄴIntl.Collator
+ㄴIntl.DateTimeFormat
+ㄴIntl.DisplayNames
+ㄴIntl.DurationFormat
+ㄴIntl.ListFormat
+ㄴIntl.Locale
+ㄴIntl.NumberFormat
+ㄴIntl.PluralRules
+ㄴIntl.RelativeTimeFormat
+ㄴIntl.Segmenter
+ㄴIntl[Symbol.toStringTag]
+ㄴIntl.getCanonicalLocales()
+ㄴIntl.supportedValuesOf()

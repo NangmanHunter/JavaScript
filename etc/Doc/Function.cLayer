@@ -1,0 +1,13 @@
+Function
+ㄴFunction()
+ㄴfunction.displayName
+ㄴfunction.length
+ㄴfunction.name
+ㄴfunction.prototype
+ㄴfunction.arguments
+ㄴfunction.caller
+ㄴfunction.apply()
+ㄴfunction.bind()
+ㄴfunction.call()
+ㄴfunction.toString()
+ㄴfunction[Symbol.hasInstance]()

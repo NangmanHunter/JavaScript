@@ -1,0 +1,11 @@
+﻿- JavaScript
+- JScript
+- Javascript
+- javascript
+- js
+- .js
+- JS
+- Js
+- Script
+- ScriptLaguage
+- script

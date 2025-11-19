@@ -1,0 +1,4 @@
+- ❌함수
+  - ❌innerHtml()
+- ✅속성(Property)
+  - ✅innerHtml=

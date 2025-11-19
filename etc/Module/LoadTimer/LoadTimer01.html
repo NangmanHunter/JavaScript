@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+window.addEventListener("load", function () {
+    const timing = performance.timing;
+    const loadTime = timing.loadEventEnd - timing.navigationStart;
+
+    console.log(`총 로딩 시간: ${loadTime}ms`);
+});    
+
+
+window.addEventListener("load", function () {
+    setTimeout(() => {
+        const timing = performance.timing;
+        const loadTime = timing.loadEventEnd - timing.navigationStart;
+        console.log(`총 로딩 시간: ${loadTime}ms`);
+    }, 0); 
+});
+
+
+
+const start = performance.now();
+window.addEventListener("load", () => {
+    const end = performance.now();
+    const duration = end - start;
+    console.log(`페이지 로딩 시간: ${duration.toFixed(2)}ms`);
+});
+
+
+
+window.addEventListener("load", () => {
+    const [nav] = performance.getEntriesByType("navigation");
+    console.log(`총 로딩 시간: ${nav.loadEventEnd.toFixed(2)}ms`);
+});
+
+window.addEventListener("load", () => {
+    const [nav] = performance.getEntriesByType("navigation");
+    console.log(nav);
+    console.log(`로딩 시간: ${nav.loadEventEnd - nav.startTime}ms`);
+});
+
+window.addEventListener("load", () => {
+    const nav = performance.getEntriesByType("navigation")[0];
+    console.log(nav);
+    console.log("loadEventEnd:", nav.loadEventEnd);
+});
+
+
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const nav = performance.getEntriesByType("navigation")[0];
+        console.log("loadEventEnd:", nav.loadEventEnd);
+    }, 0); 
+});
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const nav = performance.getEntriesByType("navigation")[0];
+        console.log("loadEventEnd:", `${nav.loadEventEnd}ms`);
+    }, 0); 
+});
+
+
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const nav = performance.getEntriesByType("navigation")[0];
+        console.log("responseEnd:", nav.responseEnd);
+    }, 0); 
+});
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const nav = performance.getEntriesByType("navigation")[0];
+        console.log("duration:", nav.duration);
+    }, 0); 
+});
+
+
+
+
+
+</script>
+<script>
+
+window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+        // 이 시점에서 대부분 렌더링 끝났다고 봐도 됨
+        const doneTime = performance.now();
+        console.log(`거의 완전한 로드 완료 시점: ${doneTime}ms`);
+    });
+});
+
+window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            console.log("진짜 완전한 렌더링 완료 시점!", performance.now());
+        });
+    });
+});
+
+const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+        console.log(entry);
+        console.log("리소스 로딩 완료:", entry.name);
+    }
+});
+observer.observe({ entryTypes: ["resource"] });
+
+
+window.addEventListener("load", () => {
+    let done = false;
+
+    const waitUntilVisuallyReady = () => {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                if (!done) {
+                    done = true;
+                    console.log("진짜 다 그려졌다!!", performance.now());
+                    // 스피너 제거 같은 처리
+                }
+            });
+        });
+    };
+
+    waitUntilVisuallyReady();
+});
+</script>
+<script>
+window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            console.log("✅ 진짜 모든 렌더 완료된 직후");
+        });
+    });
+});
+
+window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const nav = performance.getEntriesByType("navigation")[0];
+            console.log("loadEventEnd:", nav.loadEventEnd); // 거의 최종 타이밍
+        });
+    });
+});
+
+Promise.all(
+    [...document.images].map(img => 
+      img.complete 
+        ? Promise.resolve() 
+        : new Promise(res => img.onload = img.onerror = res)
+    )
+).then(() => {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            console.log("✅ 이미지까지 완전히 그려졌음");
+        });
+    });
+});
+
+
+
+function whenFullyReady(callback) {
+    window.addEventListener("load", () => {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                // 혹시 로딩 애니메이션 끝나는 시간까지 setTimeout 걸 수도 있음
+                setTimeout(callback, 100); // 예: 100ms 후 완전히 끝났다고 가정
+            });
+        });
+    });
+}
+whenFullyReady(() => {
+    console.log("🎯 진짜 사용자 기준으로 완전 로드 완료!");
+});
+</script>
+<script>
+window.addEventListener("load", () => {
+    const elapsed = performance.now();
+    console.log(`✅ 모든 리소스 로드까지 ${elapsed.toFixed(2)}ms`);
+});
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const nav = performance.getEntriesByType("navigation")[0];
+        const loadTime = nav.loadEventEnd - nav.startTime;
+        console.log(`✅ 완전 로드 시간: ${loadTime.toFixed(2)}ms`);
+    }, 0); 
+});
+
+
+window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const nav = performance.getEntriesByType("navigation")[0];
+            console.log("loadEventEnd:", nav.loadEventEnd); // 거의 최종 타이밍
+        });
+    });
+});
+
+
+window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        console.log("실제 렌더링 완료 시점!");
+      });
+    });
+  });
+
+
+  window.addEventListener("load", () => {
+    const startTime = performance.now(); // 페이지 로드 직후 시간 측정
+  
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const endTime = performance.now(); // 두 번째 requestAnimationFrame 호출 직후 시간 측정
+        const renderTime = endTime - startTime; // 총 렌더링 시간 계산
+        console.log(`실제 렌더링 완료 시점에서 걸린 시간: ${renderTime.toFixed(2)}ms`);
+      });
+    });
+  });
+
+</script>
+<script>
+window.addEventListener("load", () => {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        console.log("📌 거의 모든 렌더링과 그 이후 작업이 끝났을 가능성이 높은 시점");
+      }, 0);
+    });
+  });
+});
+
+
+
+window.addEventListener("load", () => {
+    const loadDone = performance.now();
+  
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const now = performance.now();
+          const diff = now - loadDone;
+          console.log(`🕐 로드 후 완전 정지까지 소요된 시간: ${diff.toFixed(2)}ms`);
+        }, 0);
+      });
+    });
+  });
+  
+
+</script>
+
+
+
+
+
+
+<!-- 
+startTime -> 기준
+
+startTime -> loadEventEnd
+startTime -> requestStart -> responseEnd-> loadEventEnd
+startTime -> requestStart -> responseEnd-> loadEventEnd -> duration
+startTime -> requestStart -> responseEnd-> loadEventEnd = duration
+
+loadEventEnd = duration
+
+
+Browser -> 완전종료불능
+ㄴ브라우저-계속돌고있음.
+ㄴ적당히
+ㄴ적정히
+ㄴ이정도만있음.
+ㄴ그외에는불능.
+
+그렇다면.
+ㄴ걍
+ㄴfetch -> 이부분
+ㄴconsole.time - .end -> 이걸로 당해부분만 잡는식으로 구간특정ㄱㄱ.!!!
+ㄴ어차피
+ㄴfetch->이부분이 내관건임.
+ㄴㄱㄱ.!!!
+ㄴ해당프로젝트에선
+ㄴ여기선->이부분최적선이너무도필함.
+ㄴㄱㄱ.
+-->
+<!-- 
+걍...
+ㄴ개발자도구ㄱㄱ.
+ㄴNetwork
+ㄴ이걸로ㄱㄱ.;;
+ㄴ이게맞다.;;
+ㄴㄹㅇ.;;
+ㄴㅇㄴ.
+ㄴ이거구나.;;
+아니다.
+ㄴ이건
+ㄴ랜더링을못잡음.
+ㄴ걍
+ㄴ네트워크만잡음.;;
+
+
+
+-->
+<!-- 
+아...
+ㄴ답없다.;;
+ㄴㄹㅇ.
+ㄴ걍
+ㄴ적당히.
+ㄴ적정히.
+ㄴ적당한지점ㄱㄱ.;;
+ㄴ타협안ㄱㄱ.
+애당초
+ㄴ브라우저가.
+ㄴ다비워지거나
+ㄴ하는형태가없기에
+ㄴ그런듯함.;;
+ㄴ계속돌고있는지점이라.
+ㄴ이지점
+ㄴ특정하는게
+ㄴ생각보다
+ㄴ너무도
+ㄴ어려운듯함.;;
+ㄴ후.
+
+확실히
+ㄴUi <-> Ux
+ㄴ지점이상이.
+ㄴ던지는지점 <-> 받는지점
+ㄴ전혀다르다.;;
+ㄴ백날
+ㄴconsole로찍더라도
+ㄴUi지점일뿐.
+ㄴUx지점이아님.;;
+ㄴ이게
+ㄴ근본적한계임.;;
+
+즉,
+ㄴ내가측정할건.
+ㄴUx임.!!!
+ㄴconsole -> Ui
+ㄴ백날해도
+ㄴUi임.!!!
+ㄴUx가아님.!!!
+ㄴㄹㅇ.
+ㄴㅇㄴ.
+ㄴ이거구나.
+
+
+-->
+<!-- 
+개발자도구
+ㄴLigthhouse
+
+와....
+ㄴ다있었네.;;
+ㄴㄹㅇ.
+ㄴ걍
+ㄴ내가모를뿐이었음.;;
+ㄴㅇㄴ.
+ㄴ너무도
+ㄴ미천하고
+ㄴ미약하다.
+ㄴㄹㅇ.;;
+ㄴ후.
+
+-->
