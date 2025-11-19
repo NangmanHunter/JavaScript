@@ -1,4 +1,4 @@
 # JavaScript
 
 ## Pages
-- [index.html](https://nangman.org/JavaScript/)
+- [IndexPage](https://nangman.org/JavaScript/)
