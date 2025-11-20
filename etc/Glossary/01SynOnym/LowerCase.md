@@ -1,0 +1,14 @@
+- LowerCase
+- 웹개발-소문자-관례.-index.html-main.js-관례대로ㄱㄱ.
+- 소문자-카멜
+- 소문자-스네이크
+- 소문자-케밥
+- 소문자-케밥-스네이크-카멜
+- 소문자-✅케밥
+- 🥇 1) 케밥 케이스(kebab-case) — 가장 많이 씀
+- 🥈 2) 스네이크 케이스(snake_case) — 두 번째로 흔함
+- 🥉 3) 카멜 케이스(camelCase) — 파일명에서는 잘 안 씀
+- ▪️ 4) 파스칼 케이스(PascalCase) — 클래스/컴포넌트에서만 씀
+- html관례-`index.html`
+- js관례-`main.js`
+- 무지성관례ㄱㄱ.-`index.html`-`main.js`

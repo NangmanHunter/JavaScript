@@ -1,3 +1,8 @@
+/*
+Source
+- https://www.youtube.com/watch?v=xr4nM-rAZkQ
+*/
+
 "use strict";
 
 const {PI, cos, sin, abs } = Math;

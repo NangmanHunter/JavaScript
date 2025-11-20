@@ -5,7 +5,13 @@
 - js
 - .js
 - JS
+- VanillaJS
+- VanillaJs
+- Vanilla JS
 - Js
 - Script
 - ScriptLaguage
 - script
+- [나무위키_VallinaJS](https://namu.wiki/w/Vanilla%20JS)
+- 디버그 기능에서는 바닐라 JS가 진가를 발휘한다. 바닐라 JS로 만든 구문은 디버그를 할 때에 해당 구문만을 조사하지만 라이브러리를 통해 만든 구문은 디버그를 할 때 해당 구문뿐 아니라 라이브러리 파일 안을 몇 바퀴 돌고 오는 일도 있기 때문이다. 
+- [VanillaJS](http://vanilla-js.com/)

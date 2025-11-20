@@ -1,0 +1,13 @@
+- UseStrict
+- "use strict";
+- `"use strict";`
+- 엄격 모드(strict mode)를 활성화하는 선언문
+- ECMAScript 5(ES5)부터 도입
+- 문자열처럼 생겼지만 실제로 자바스크립트 엔진에게 코딩 규칙을 더 엄격히 지키라고 지시하는 키워드
+- 암묵적 전역 변수 금지👉일반 모드에서는 x = 10;처럼 선언 없이 변수 만들 수 있음 → 버그 원인
+- 암묵적 전역 변수 금지👉엄격 모드에서는 반드시 let, const, var로 선언해야 함
+- 쓰기 금지 키워드 방지👉미래 버전 JS에서 예약어가 될 키워드 사용 금지 (implements, interface 등)
+- 안전한 this👉일반 모드: 함수에서 this가 전역 객체(window, global)를 가리킴
+- 안전한 this👉엄격 모드: 정의되지 않은 컨텍스트에서 this → undefined
+- 중복 매개변수 금지👉function sum(a, a) {} // ❌ SyntaxError
+- eval() 제한 강화👉eval() 내에서 선언한 변수/함수가 외부 스코프에 안 퍼지게 제한

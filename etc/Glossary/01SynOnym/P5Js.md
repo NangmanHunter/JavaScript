@@ -1,0 +1,20 @@
+- P5js
+- P5Js
+- P5JS
+- p5js
+- `p5js`
+- `p5.js`
+- 웹 브라우저에서 캔버스, 애니메이션, WEBGL 3D 렌더링 등을
+- 아주 쉽게 만들 수 있게 해주는 JS 라이브러리입니다.
+- Processing의 JS 버전이라고 보면 됨.
+- [p5js](https://p5js.org/)
+- Processing이란? 원래 아티스트·디자이너·초보자가 쉽게 코딩할 수 있게 만든 비주얼 프로그래밍 언어임.
+- Processing이란? 그림 그리기, 애니메이션, 인터랙티브 아트 같은 걸 만들기 엄청 쉬움.
+- Processing이란? 문법은 Java 기반.
+- p5.js는 뭐냐? → Processing을 웹 브라우저용 JavaScript로 옮긴 버전.
+- Processing (Java 기반)
+- p5.js (JavaScript 기반)
+- “Processing = 예술/비주얼을 위한 코딩 언어"
+- “p5.js = 동일한 개념을 웹 브라우저에서 쓰기 위한 JavaScript 버전"
+- Processing	데스크톱 앱	Java 기반	위의 예제들
+- p5.js	웹 브라우저	JavaScript 기반	createCanvas(), draw() 등
