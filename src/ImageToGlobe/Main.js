@@ -1,6 +1,10 @@
 /*
 Resource
 - https://www.youtube.com/watch?v=RrYUukVa0YM
+
+ImageResource
+- https://i.ibb.co/nkmnNXS/World-Map-High-Res.jpg
+- img=loadImage('https://i.ibb.co/nkmnNXS/World-Map-High-Res.jpg');
 */
 
 
@@ -8,7 +12,7 @@ var img;
 var deg=0;
 
 function preload(){
-    img=loadImage('https://i.ibb.co/nkmnNXS/World-Map-High-Res.jpg');
+    img=loadImage('res/World-Map-High-Res.jpg');
 }
 
 function setup(){
