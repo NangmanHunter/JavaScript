@@ -1,0 +1,8 @@
+- FileNameConvention
+- 작은 프로젝트니까 이름 늘려봐야 의미가 없음
+- 네이밍을 복잡하게 해도: 파일이 2~3개밖에 없는데
+- 무슨 기능인지 다 알고 있는데 homepage_init_main.js라고 지으면 오히려 불필요함.
+- `index.html`
+- `style.css`
+- `main.js`
+- 관습적.-`index.html`-`style.css`-`main.js`
