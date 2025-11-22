@@ -1,0 +1,43 @@
+/* 
+Resource
+- https://www.youtube.com/watch?v=A-UzUoyGPt4
+*/
+
+
+body{
+    margin: 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100vh;
+    overflow: hidden;
+}
+
+.grid{
+    width: 500px;
+    height: 500px;
+    background:
+        repeating-linear-gradient(#09f 0.2px, transparent 2px 40px),
+        repeating-linear-gradient(90deg, #09f 0.2px, transparent 2px 40px);
+    animation: wave 4s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 10px #09f);
+    transform: perspective(800px) rotateX(50deg);
+}
+
+
+@keyframes wave{
+    0%{
+        transform: perspective(800px) rotateX(50deg) translateY(0);
+        filter: drop-shadow(0 0 8px #0ff);
+    }
+    50%{
+        transform: perspective(800px) rotateX(50deg) translateY(-20px) scale(1.02);
+        filter: drop-shadow(0 0 20px #0ff);
+    }
+    100%{
+        transform: perspective(800px) rotateX(50deg) translateY(0);
+        filter: drop-shadow(0 0 8px #0ff);
+    }
+}
