@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Simple Grid Chart (SVG)</title>
+<style>
+  :root{
+    --bg: #0b0b0f;
+    --grid: #2a2a35;
+    --axis: #e6e6e6;
+    --point: #ff6b6b;
+    --line: #39d353;
+    --label: #cfcfcf;
+  }
+  body{margin:0; font-family: Inter, system-ui, sans-serif; background:var(--bg); color:var(--label); display:flex; gap:20px; height:100vh; align-items:flex-start; padding:20px;}
+  .chart-wrap{background:linear-gradient(180deg,#071018,#0f1720); padding:12px; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,.6);}
+  svg{display:block; width:800px; height:560px; background:transparent; border-radius:6px;}
+  .controls{min-width:240px; display:flex; flex-direction:column; gap:10px;}
+  label{font-size:13px; color:var(--label);}
+  input[type="number"], input[type="text"], select{width:100%; padding:6px 8px; border-radius:6px; border:1px solid #222; background:#0b0b0f; color:var(--label)}
+  button{padding:8px 10px; border-radius:6px; border:none; cursor:pointer; background:#1f6feb; color:white}
+  small{color:#9aa0b0}
+  .legend{display:flex; gap:10px; align-items:center; margin-top:8px}
+  .dot{width:12px;height:12px;border-radius:50%}
+</style>
+</head>
+<body>
+  <div class="chart-wrap">
+    <svg id="svg" viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grid chart"></svg>
+  </div>
+
+  <div class="controls">
+    <div>
+      <label>Data range / scale</label>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <input id="xmin" type="number" value="-10" step="1" />
+        <input id="xmax" type="number" value="10" step="1" />
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <input id="ymin" type="number" value="-5" step="1" />
+        <input id="ymax" type="number" value="5" step="1" />
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button id="applyRange">Apply Range</button>
+        <button id="clearAll" style="background:#e63946">Clear</button>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #222" />
+
+    <div>
+      <label>Add a point (x, y, label)</label>
+      <input id="px" type="number" placeholder="x" value="0" step="any" />
+      <input id="py" type="number" placeholder="y" value="0" step="any" />
+      <input id="pl" type="text" placeholder="label (optional)" />
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button id="btnAdd">Add Point</button>
+        <button id="btnAddRand" style="background:#0bce97">Random</button>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #222" />
+
+    <div>
+      <label>Draw line (comma-separated pairs)<br><small>e.g.  -5,0 -2,1 0,2 3,-1</small></label>
+      <input id="lineInput" type="text" placeholder="-5,0 -2,1 0,2 3,-1" />
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button id="drawLine">Draw Line</button>
+        <button id="clearLines" style="background:#7a2be0">Clear Lines</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;gap:6px;align-items:center"><span class="dot" style="background:var(--axis)"></span><small>Axis</small></div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="dot" style="background:var(--grid)"></span><small>Grid</small></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;gap:6px;align-items:center"><span class="dot" style="background:var(--point)"></span><small>Point</small></div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="dot" style="background:var(--line)"></span><small>Line</small></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/*
+  Simple SVG grid chart
+  - SVG size/viewBox: 800 x 560
+  - Data range mapped to innerPlot area with padding
+  - Functions: drawGrid(), addPoint(x,y,label), addLine(pointsArray)
+*/
+
+const svg = document.getElementById('svg');
+const W = 800, H = 560;
+const padding = { left:70, right:40, top:40, bottom:70 };
+const innerW = W - padding.left - padding.right;
+const innerH = H - padding.top - padding.bottom;
+
+// state: data range
+let state = {
+  xmin: -10, xmax: 10,
+  ymin: -5, ymax: 5
+};
+
+// container groups
+const gridG = createEl('g', {id:'gridG'});
+const axesG = createEl('g', {id:'axesG'});
+const dataG = createEl('g', {id:'dataG'});
+svg.appendChild(gridG);
+svg.appendChild(axesG);
+svg.appendChild(dataG);
+
+// helper: create svg element with attrs
+function createEl(tag, attrs={}) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+
+// map data coords -> svg pixel coords
+function mapX(x) {
+  const t = (x - state.xmin) / (state.xmax - state.xmin);
+  return padding.left + t * innerW;
+}
+function mapY(y) {
+  const t = (y - state.ymin) / (state.ymax - state.ymin);
+  // SVG y goes down, so invert
+  return padding.top + (1 - t) * innerH;
+}
+
+// draw grid and axes
+function drawGrid() {
+  // clear
+  gridG.innerHTML = '';
+  axesG.innerHTML = '';
+
+  // background rect for clarity (optional)
+  const bg = createEl('rect', {
+    x: padding.left, y: padding.top, width: innerW, height: innerH,
+    fill: 'none'
+  });
+  gridG.appendChild(bg);
+
+  // grid lines (choose nice tick step)
+  const xStep = niceStep(state.xmin, state.xmax, 10);
+  const yStep = niceStep(state.ymin, state.ymax, 8);
+
+  // vertical grid
+  for (let x = Math.ceil(state.xmin / xStep) * xStep; x <= state.xmax; x += xStep) {
+    const px = mapX(x);
+    const line = createEl('line', {
+      x1: px, x2: px, y1: padding.top, y2: padding.top + innerH,
+      stroke: getComputedStyle(document.documentElement).getPropertyValue('--grid') || '#222',
+      'stroke-width': 1
+    });
+    gridG.appendChild(line);
+
+    // tick label
+    const txt = createEl('text', {
+      x: px, y: padding.top + innerH + 18,
+      'text-anchor': 'middle', 'font-size': 12, fill: 'var(--label)'
+    });
+    txt.textContent = formatNum(x);
+    gridG.appendChild(txt);
+  }
+
+  // horizontal grid
+  for (let y = Math.ceil(state.ymin / yStep) * yStep; y <= state.ymax; y += yStep) {
+    const py = mapY(y);
+    const line = createEl('line', {
+      x1: padding.left, x2: padding.left + innerW, y1: py, y2: py,
+      stroke: getComputedStyle(document.documentElement).getPropertyValue('--grid') || '#222',
+      'stroke-width': 1
+    });
+    gridG.appendChild(line);
+
+    // tick label on left
+    const txt = createEl('text', {
+      x: padding.left - 10, y: py + 4,
+      'text-anchor': 'end', 'font-size': 12, fill: 'var(--label)'
+    });
+    txt.textContent = formatNum(y);
+    gridG.appendChild(txt);
+  }
+
+  // axes lines (x and y at 0 if within range, otherwise at edges)
+  const x0 = (state.ymin <= 0 && state.ymax >= 0) ? mapY(0) : (state.ymin > 0 ? mapY(state.ymin) : mapY(state.ymax));
+  const y0 = (state.xmin <= 0 && state.xmax >= 0) ? mapX(0) : (state.xmin > 0 ? mapX(state.xmin) : mapX(state.xmax));
+
+  // x axis
+  axesG.appendChild(createEl('line', {
+    x1: padding.left, y1: x0, x2: padding.left + innerW, y2: x0,
+    stroke: 'var(--axis)', 'stroke-width': 1.6
+  }));
+  // y axis
+  axesG.appendChild(createEl('line', {
+    x1: y0, y1: padding.top, x2: y0, y2: padding.top + innerH,
+    stroke: 'var(--axis)', 'stroke-width': 1.6
+  }));
+
+  // axis labels
+  axesG.appendChild(createEl('text', { x: padding.left + innerW - 6, y: x0 - 6, 'text-anchor':'end', fill:'var(--axis)', 'font-size':13 })).textContent = 'x';
+  axesG.appendChild(createEl('text', { x: y0 + 8, y: padding.top + 12, 'text-anchor':'start', fill:'var(--axis)', 'font-size':13 })).textContent = 'y';
+}
+
+// nice step calculation (rough)
+function niceStep(min, max, targetSteps) {
+  const range = Math.abs(max - min);
+  if (range === 0) return 1;
+  const raw = range / targetSteps;
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const mant = raw / pow;
+  let niceMant;
+  if (mant <= 1) niceMant = 1;
+  else if (mant <= 2) niceMant = 2;
+  else if (mant <= 5) niceMant = 5;
+  else niceMant = 10;
+  return niceMant * pow;
+}
+
+function formatNum(v) {
+  if (Math.abs(v) < 1e-6) return '0';
+  return Number.isInteger(v) ? String(v) : String(parseFloat(v.toFixed(3)));
+}
+
+// add a point to dataG
+function addPoint(x, y, label){
+  const gx = mapX(x);
+  const gy = mapY(y);
+
+  const g = createEl('g', { class:'point', 'data-x':x, 'data-y':y });
+  // shadow / halo
+  const halo = createEl('circle', { cx: gx, cy: gy, r: 8, fill: 'none', stroke: 'rgba(255,255,255,0.06)', 'stroke-width': 10 });
+  const c = createEl('circle', { cx: gx, cy: gy, r: 5, fill: 'var(--point)', stroke: '#fff', 'stroke-width': 1 });
+  g.appendChild(halo);
+  g.appendChild(c);
+
+  if (label) {
+    const t = createEl('text', { x: gx + 10, y: gy + 4, 'font-size':13, fill:'var(--label)' });
+    t.textContent = label;
+    g.appendChild(t);
+  }
+
+  dataG.appendChild(g);
+  return g;
+}
+
+// add polyline (line segments)
+function addLine(points, opts = { stroke: 'var(--line)', width: 2 }) {
+  const pts = points.map(p => `${mapX(p.x)},${mapY(p.y)}`).join(' ');
+  const poly = createEl('polyline', { points: pts, fill: 'none', stroke: opts.stroke, 'stroke-width': opts.width, 'stroke-linecap': 'round', 'stroke-linejoin':'round', 'opacity': 0.95 });
+  dataG.appendChild(poly);
+  return poly;
+}
+
+// clear data
+function clearData() {
+  dataG.innerHTML = '';
+}
+
+// redraw (useful after range change)
+function redrawAll() {
+  // we need to re-render grid/axes and reposition all data elements if any
+  drawGrid();
+  // reposition points/lines (simple approach: re-create shapes from data attributes)
+  const pointGs = Array.from(document.querySelectorAll('#svg g.point'));
+  pointGs.forEach(g => {
+    const x = parseFloat(g.getAttribute('data-x'));
+    const y = parseFloat(g.getAttribute('data-y'));
+    const cx = mapX(x), cy = mapY(y);
+    // circles are first children (halo, then circle)
+    const children = g.children;
+    for (let i=0;i<children.length;i++){
+      const ch = children[i];
+      if (ch.tagName === 'circle') {
+        ch.setAttribute('cx', cx);
+        ch.setAttribute('cy', cy);
+      } else if (ch.tagName === 'text') {
+        ch.setAttribute('x', cx + 10);
+        ch.setAttribute('y', cy + 4);
+      }
+    }
+  });
+
+  // reposition polylines
+  const polys = Array.from(document.querySelectorAll('#svg polyline'));
+  polys.forEach(poly => {
+    // poly has attribute 'data-raw' optionally with JSON of points
+    const raw = poly.getAttribute('data-raw');
+    if (raw) {
+      try {
+        const pts = JSON.parse(raw);
+        poly.setAttribute('points', pts.map(p => `${mapX(p.x)},${mapY(p.y)}`).join(' '));
+      } catch(e){}
+    }
+  });
+}
+
+// initial draw
+drawGrid();
+
+// ---------------- UI wiring ----------------
+document.getElementById('applyRange').addEventListener('click', ()=>{
+  const xmin = parseFloat(document.getElementById('xmin').value);
+  const xmax = parseFloat(document.getElementById('xmax').value);
+  const ymin = parseFloat(document.getElementById('ymin').value);
+  const ymax = parseFloat(document.getElementById('ymax').value);
+  if (isNaN(xmin) || isNaN(xmax) || isNaN(ymin) || isNaN(ymax)) return alert('enter numeric range');
+  if (xmin >= xmax || ymin >= ymax) return alert('min must be < max');
+  state.xmin = xmin; state.xmax = xmax; state.ymin = ymin; state.ymax = ymax;
+  redrawAll();
+});
+
+document.getElementById('btnAdd').addEventListener('click', ()=>{
+  const x = parseFloat(document.getElementById('px').value);
+  const y = parseFloat(document.getElementById('py').value);
+  const l = document.getElementById('pl').value;
+  if (isNaN(x) || isNaN(y)) return alert('enter numeric coords');
+  addPoint(x,y,l);
+});
+
+document.getElementById('btnAddRand').addEventListener('click', ()=>{
+  const x = state.xmin + Math.random() * (state.xmax - state.xmin);
+  const y = state.ymin + Math.random() * (state.ymax - state.ymin);
+  addPoint(x,y, '');
+});
+
+document.getElementById('drawLine').addEventListener('click', ()=>{
+  const s = document.getElementById('lineInput').value.trim();
+  if (!s) return;
+  // parse pairs like: "-5,0 -2,1 0,2"
+  const parts = s.split(/\s+/).map(p => p.split(',').map(Number));
+  const pts = parts.map(p => ({x:p[0], y:p[1]}));
+  const poly = addLine(pts);
+  // store raw data for repositioning on redraw
+  poly.setAttribute('data-raw', JSON.stringify(pts));
+});
+
+document.getElementById('clearAll').addEventListener('click', ()=>{ clearData(); });
+document.getElementById('clearLines').addEventListener('click', ()=>{
+  // remove polylines only
+  Array.from(document.querySelectorAll('#svg polyline')).forEach(p=>p.remove());
+});
+</script>
+</body>
+</html>
